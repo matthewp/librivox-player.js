@@ -8,9 +8,11 @@ Chrome web app example:
 
 <audio id="player" src="" controls>audio not supported in your browser</audio>
 <script type="text/javascript">
-	var AudioPlayer = new Player(document.getElementById("player"));
-	var Frankenstein = new Book(1, 'Shelley, Mary Wollstonecraft. "Frankenstein, or Modern Prometheus"', 'Fiction', 'Science fiction', 'http://librivox.org/rss/381');
-	Frankenstein.loadChapters(function() {
-		AudioPlayer.play(Frankenstein.chapters);
+	AudioPlayer = new LibLib.Player(document.getElementById("player"));
+	LibLib.Search("simple", "Frankenstein", function(results) {
+		var Frankenstein = results[0];
+		Frankenstein.loadChapters(function() {
+			AudioPlayer.play(Frankenstein.chapters);
+		});
 	});
 </script>

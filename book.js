@@ -1,4 +1,4 @@
-var Book = Class.extend({
+LibLib.Book = Class.extend({
 	init: function(id, title, category, genre, rssurl) {
 		this.id = id;
 		this.title = title;
@@ -19,10 +19,10 @@ var Book = Class.extend({
 	loadChapters: function(success, failure) {
 		httpRequest(this.rssurl, function(xmlDoc) {
 			var items = xmlDoc.getElementsByTagName("item");
-			var chaps = items.length;
+			var chaps = new Array(items.length);
 			for(var i = 0; i < items.length; i++) {
-				var title = items.getElementsByTagName("title")[0].text;
-				var link = items.getElementsByTagName("link")[0].text;
+				var title = items[i].getElementsByTagName("title")[0].text;
+				var link = items[i].getElementsByTagName("link")[0].text;
 				chaps[i] = new Chapter(title, link);
 			}
 			this.chapters = chaps;
@@ -31,7 +31,7 @@ var Book = Class.extend({
 	}
 });
 
-var Chapter = Class.extend({
+LibLib.Chapter = Class.extend({
 	init: function(title, link, bookTitle) {
 		this.title = title;
 		this.link = link;

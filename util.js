@@ -1,4 +1,4 @@
-httpRequest = function(url, success, failure) {
+LibLib.httpRequest = function(url, success, failure) {
 	var xmlhttp;
 	if (window.XMLHttpRequest) {
 		xmlhttp = new XMLHttpRequest();

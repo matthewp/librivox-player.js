@@ -1,4 +1,4 @@
-var Player = Class.extend({
+LibLib.Player = Class.extend({
 	init: function(element) {
 		this.audioElement = element;
 	},
@@ -11,10 +11,18 @@ var Player = Class.extend({
 		};
 	
 		this.audioElement.addEventListener("canplay", canplayListener, false);
+	},
+	
+	pause: function() {
+		this.audioElement.pause;
+	}
+	
+	paused: function() {
+		return this.audioElement.paused;
 	}
 });
 
-var Queue = Player.extend({
+LibLib.Queue = LibLib.Player.extend({
 	init: function(element) {
 		this._super(element);
 		this.items = [];
