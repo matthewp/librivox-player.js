@@ -13,9 +13,13 @@ LibLib.Player = Class.extend({
 		this.audioElement.addEventListener("canplay", canplayListener, false);
 	},
 	
+	playAtPosition(chapter, position) {
+	
+	},
+	
 	pause: function() {
 		this.audioElement.pause;
-	}
+	},
 	
 	paused: function() {
 		return this.audioElement.paused;
@@ -23,6 +27,8 @@ LibLib.Player = Class.extend({
 });
 
 LibLib.Queue = LibLib.Player.extend({
+	lastSavedPosition: 0,
+
 	init: function(element) {
 		this._super(element);
 		this.items = [];
@@ -36,9 +42,20 @@ LibLib.Queue = LibLib.Player.extend({
 		});
 	},
 	
-	play: function() {
+	play: function(items) {
+		if(items != null) {
+			this.add(items);
+			this.current = 0;
+		}
+		
 		if(this.items.length > 0) {
 			this._super(this.items[this.current]);
+		}
+	},
+	
+	playAtPosition: function(position) {
+		if(this.items.length > 0) {
+			this._super(this.items[this.current], position);
 		}
 	},
 	
@@ -48,5 +65,13 @@ LibLib.Queue = LibLib.Player.extend({
 		} else if(item instanceof Chapter) {
 			this.items.push(item);
 		}
+	}
+	
+	getCurrent: function() {
+		return this.items[this.current];
+	}
+	
+	savePosition: function() {
+		this.lastSavedPosition = this.audioElement.currentTime;
 	}
 });
