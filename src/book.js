@@ -1,3 +1,11 @@
+LibLib.Chapter = Class.extend({
+	init: function(title, link, bookTitle) {
+		this.title = title;
+		this.link = link;
+		this.bookTitle = bookTitle;
+	}
+});
+
 LibLib.Book = Class.extend({
 	init: function(id, title, category, genre, rssurl) {
 		this.id = id;
@@ -28,13 +36,5 @@ LibLib.Book = Class.extend({
 			this.chapters = chaps;
 			success();
 		}, failure());
-	}
-});
-
-LibLib.Chapter = Class.extend({
-	init: function(title, link, bookTitle) {
-		this.title = title;
-		this.link = link;
-		this.bookTitle = bookTitle;
 	}
 });
