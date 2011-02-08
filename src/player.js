@@ -14,7 +14,13 @@ LibLib.Player = Class.extend({
 	},
 	
 	playAtPosition(chapter, position) {
+		canplayListener = function(evt) {
+			this.audioElement.removeEventListener("canplay", canplayListener, false);
+			this.audioElement.currentTime = position;
+			this.audioElement.play();
+		};
 	
+		this.audioElement.addEventListener("canplay", canplayListener, false);
 	},
 	
 	pause: function() {
@@ -54,6 +60,10 @@ LibLib.Queue = LibLib.Player.extend({
 	},
 	
 	playAtPosition: function(position) {
+		if(position == null) {
+			this._super(this.items[this.current], this.lastSavedPosition);
+		}
+
 		if(this.items.length > 0) {
 			this._super(this.items[this.current], position);
 		}

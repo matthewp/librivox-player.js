@@ -1,3 +1,10 @@
+
+
+/* Simple JavaScript Inheritance
+ * By John Resig http://ejohn.org/
+ * MIT Licensed.
+ */
+// Inspired by base2 and Prototype
 (function(){
   var initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
   // The base Class implementation (does nothing)
@@ -55,11 +62,7 @@
     
     return Class;
   };
-})();
-
-var LibLib = {}
-
-LibLib.httpRequest = function(url, success, failure) {
+})();var LibLib = {}LibLib.httpRequest = function(url, success, failure) {
 	LibLib.xmlhttp;
 	if (window.XMLHttpRequest) {
 		LibLib.xmlhttp = new XMLHttpRequest();
@@ -82,9 +85,7 @@ LibLib.abortRequest = function() {
 	if(LibLib.xmlhttp != null) {
 		LibLib.xmlhttp.abort();
 	}
-}
-
-LibLib.Chapter = Class.extend({
+}LibLib.Chapter = Class.extend({
 	init: function(title, link, bookTitle) {
 		this.title = title;
 		this.link = link;
@@ -123,9 +124,7 @@ LibLib.Book = Class.extend({
 			success();
 		}, failure());
 	}
-});
-
-LibLib.Search = function(type, term, success) {
+});LibLib.Search = function(type, term, success) {
 		var xmllocation = "http://librivox.org/newcatalog/search_xml.php?extended=1&";
 		switch(type) {
 			case "simple":
@@ -148,9 +147,7 @@ LibLib.Search = function(type, term, success) {
 			}
 			success(books);
 		});
-};
-
-LibLib.Player = Class.extend({
+};LibLib.Player = Class.extend({
 	init: function(element) {
 		this.audioElement = element;
 	},
@@ -166,7 +163,13 @@ LibLib.Player = Class.extend({
 	},
 	
 	playAtPosition(chapter, position) {
+		canplayListener = function(evt) {
+			this.audioElement.removeEventListener("canplay", canplayListener, false);
+			this.audioElement.currentTime = position;
+			this.audioElement.play();
+		};
 	
+		this.audioElement.addEventListener("canplay", canplayListener, false);
 	},
 	
 	pause: function() {
@@ -206,6 +209,10 @@ LibLib.Queue = LibLib.Player.extend({
 	},
 	
 	playAtPosition: function(position) {
+		if(position == null) {
+			this._super(this.items[this.current], this.lastSavedPosition);
+		}
+
 		if(this.items.length > 0) {
 			this._super(this.items[this.current], position);
 		}
