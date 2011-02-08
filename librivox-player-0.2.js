@@ -75,13 +75,15 @@ LibLib.httpRequest = function(url, success, failure) {
 	}
 	
 	LibLib.xmlhttp.onreadystatechange = function() {
-		if(LibLib.xmlhttp.readyState == 4 && LibLib.xmlhttp.status == 200) {
-			success(LibLib.xmlhttp.responseXML);
+		if(this.readyState == 4 && this.status == 200) {
+			success(LibLib.xmlhttp.responseXML.documentElement);
 		} else {
-			failure();
+			if(failure != null) {
+				failure();
+			}
 		}
 	}
-	LibLib.xmlhttp.open("GET",url,true);
+	LibLib.xmlhttp.open("GET",url);
 	LibLib.xmlhttp.send();
 };
 
@@ -119,17 +121,25 @@ LibLib.Book = Class.extend({
 	},
 	
 	loadChapters: function(success, failure) {
-		httpRequest(this.rssurl, function(xmlDoc) {
+		var thisBook = this;
+
+		callback = function() {
+			if(failure != null) {
+				failure();			
+			}
+		};
+	
+		LibLib.httpRequest(this.rssurl, function(xmlDoc) {
 			var items = xmlDoc.getElementsByTagName("item");
 			var chaps = new Array(items.length);
 			for(var i = 0; i < items.length; i++) {
-				var title = items[i].getElementsByTagName("title")[0].text;
-				var link = items[i].getElementsByTagName("link")[0].text;
-				chaps[i] = new Chapter(title, link);
+				var title = items[i].getElementsByTagName("title")[0].firstChild.nodeValue;
+				var link = items[i].getElementsByTagName("link")[0].firstChild.nodeValue;
+				chaps[i] = new LibLib.Chapter(title, link);
 			}
-			this.chapters = chaps;
+			thisBook.chapters = chaps;
 			success();
-		}, failure());
+		}, callback());
 	}
 });
 
@@ -145,15 +155,15 @@ LibLib.Search = function(type, term, success) {
 		}
 		
 		LibLib.httpRequest(xmllocation, function(xmlDoc) {
-			var items = xmlDoc.getElementsByTagName("item");
+			var items = xmlDoc.getElementsByTagName("book");
 			var books = new Array(items.length);
 			for(var i = 0; i < items.length; i++) {
-				var id = items[i].getElementsByTagName("id")[0].text;
-				var title = items[i].getElementsByTagName("title")[0].text;
-				var category = items[i].getElementsByTagName("Category")[0].text;
-				var genre = items[i].getElementsByTagName("Genre")[0].text;
-				var rssurl = items[i].getElementsByTagName("rssurl")[0].text;
-				books[i] = new Book(id, title, category, genre, rssurl);
+				var id = items[i].getElementsByTagName("id")[0].firstChild.nodeValue;
+				var title = items[i].getElementsByTagName("title")[0].firstChild.nodeValue;
+				var category = items[i].getElementsByTagName("Category")[0].firstChild.nodeValue;
+				var genre = items[i].getElementsByTagName("Genre")[0].firstChild.nodeValue;
+				var rssurl = items[i].getElementsByTagName("rssurl")[0].firstChild.nodeValue;
+				books[i] = new LibLib.Book(id, title, category, genre, rssurl);
 			}
 			success(books);
 		});
@@ -166,22 +176,24 @@ LibLib.Player = Class.extend({
 	},
 	
 	play: function(chapter) {
-		canplayListener = function(evt) {
+		var canplayListener = function(evt) {
 			this.audioElement.removeEventListener("canplay", canplayListener, false);
 			this.audioElement.currentTime = 0.0;
 			this.audioElement.play();
 		};
 	
+		this.audioElement.src = chapter.link;
 		this.audioElement.addEventListener("canplay", canplayListener, false);
 	},
 	
-	playAtPosition(chapter, position) {
-		canplayListener = function(evt) {
+	playAtPosition: function(chapter, position) {
+		var canplayListener = function(evt) {
 			this.audioElement.removeEventListener("canplay", canplayListener, false);
 			this.audioElement.currentTime = position;
 			this.audioElement.play();
 		};
 	
+		this.audioElement.src = chapter.link;
 		this.audioElement.addEventListener("canplay", canplayListener, false);
 	},
 	
@@ -202,7 +214,7 @@ LibLib.Queue = LibLib.Player.extend({
 		this.items = [];
 		this.current = 0;
 		
-		this.audioElement.bind("ended", function() {
+		this.audioElement.addEventListener("ended", function() {
 			if(this.items.length > 0 && this.items.length - 1 != this.current) {
 				this.current++;
 				this.play();
@@ -231,17 +243,17 @@ LibLib.Queue = LibLib.Player.extend({
 		}
 	},
 	
-	add : function(item) {
-		if(item instanceof Book) {
+	add: function(item) {
+		if(item instanceof LibLib.Book) {
 			this.items.push(item.chapters);
-		} else if(item instanceof Chapter) {
+		} else if(item instanceof LibLib.Chapter) {
 			this.items.push(item);
 		}
-	}
+	},
 	
 	getCurrent: function() {
 		return this.items[this.current];
-	}
+	},
 	
 	savePosition: function() {
 		this.lastSavedPosition = this.audioElement.currentTime;

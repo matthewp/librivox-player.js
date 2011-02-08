@@ -25,17 +25,25 @@ LibLib.Book = Class.extend({
 	},
 	
 	loadChapters: function(success, failure) {
-		httpRequest(this.rssurl, function(xmlDoc) {
+		var thisBook = this;
+
+		callback = function() {
+			if(failure != null) {
+				failure();			
+			}
+		};
+	
+		LibLib.httpRequest(this.rssurl, function(xmlDoc) {
 			var items = xmlDoc.getElementsByTagName("item");
 			var chaps = new Array(items.length);
 			for(var i = 0; i < items.length; i++) {
-				var title = items[i].getElementsByTagName("title")[0].text;
-				var link = items[i].getElementsByTagName("link")[0].text;
-				chaps[i] = new Chapter(title, link);
+				var title = items[i].getElementsByTagName("title")[0].firstChild.nodeValue;
+				var link = items[i].getElementsByTagName("link")[0].firstChild.nodeValue;
+				chaps[i] = new LibLib.Chapter(title, link);
 			}
-			this.chapters = chaps;
+			thisBook.chapters = chaps;
 			success();
-		}, failure());
+		}, callback());
 	}
 });
 

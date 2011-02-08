@@ -22,7 +22,4 @@ do
 	cat $file >> $releasefile
 done
 
-cd ..
-git rm *.js
-cd src
 mv $releasefile ..

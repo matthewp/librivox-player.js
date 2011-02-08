@@ -7,13 +7,15 @@ LibLib.httpRequest = function(url, success, failure) {
 	}
 	
 	LibLib.xmlhttp.onreadystatechange = function() {
-		if(LibLib.xmlhttp.readyState == 4 && LibLib.xmlhttp.status == 200) {
-			success(LibLib.xmlhttp.responseXML);
+		if(this.readyState == 4 && this.status == 200) {
+			success(LibLib.xmlhttp.responseXML.documentElement);
 		} else {
-			failure();
+			if(failure != null) {
+				failure();
+			}
 		}
 	}
-	LibLib.xmlhttp.open("GET",url,true);
+	LibLib.xmlhttp.open("GET",url);
 	LibLib.xmlhttp.send();
 };
 
