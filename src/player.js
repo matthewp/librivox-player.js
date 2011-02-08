@@ -85,3 +85,5 @@ LibLib.Queue = LibLib.Player.extend({
 		this.lastSavedPosition = this.audioElement.currentTime;
 	}
 });
+
+

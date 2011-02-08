@@ -60,7 +60,13 @@
     
     return Class;
   };
-})();var LibLib = {}LibLib.httpRequest = function(url, success, failure) {
+})();
+
+
+var LibLib = {}
+
+
+LibLib.httpRequest = function(url, success, failure) {
 	LibLib.xmlhttp;
 	if (window.XMLHttpRequest) {
 		LibLib.xmlhttp = new XMLHttpRequest();
@@ -77,13 +83,16 @@
 	}
 	LibLib.xmlhttp.open("GET",url,true);
 	LibLib.xmlhttp.send();
-}
+};
 
 LibLib.abortRequest = function() {
 	if(LibLib.xmlhttp != null) {
 		LibLib.xmlhttp.abort();
 	}
-}LibLib.Chapter = Class.extend({
+};
+
+
+LibLib.Chapter = Class.extend({
 	init: function(title, link, bookTitle) {
 		this.title = title;
 		this.link = link;
@@ -122,7 +131,10 @@ LibLib.Book = Class.extend({
 			success();
 		}, failure());
 	}
-});LibLib.Search = function(type, term, success) {
+});
+
+
+LibLib.Search = function(type, term, success) {
 		var xmllocation = "http://librivox.org/newcatalog/search_xml.php?extended=1&";
 		switch(type) {
 			case "simple":
@@ -145,7 +157,10 @@ LibLib.Book = Class.extend({
 			}
 			success(books);
 		});
-};LibLib.Player = Class.extend({
+};
+
+
+LibLib.Player = Class.extend({
 	init: function(element) {
 		this.audioElement = element;
 	},
@@ -232,3 +247,5 @@ LibLib.Queue = LibLib.Player.extend({
 		this.lastSavedPosition = this.audioElement.currentTime;
 	}
 });
+
+

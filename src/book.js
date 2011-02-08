@@ -38,3 +38,5 @@ LibLib.Book = Class.extend({
 		}, failure());
 	}
 });
+
+

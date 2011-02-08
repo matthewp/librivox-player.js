@@ -15,10 +15,12 @@ LibLib.httpRequest = function(url, success, failure) {
 	}
 	LibLib.xmlhttp.open("GET",url,true);
 	LibLib.xmlhttp.send();
-}
+};
 
 LibLib.abortRequest = function() {
 	if(LibLib.xmlhttp != null) {
 		LibLib.xmlhttp.abort();
 	}
-}
+};
+
+
