@@ -1,11 +1,10 @@
-NOTICE: This code is not yet tested and working.
-
 This project is an adaption of a Chrome Web App I created.  I'm trying to clean up the code so that the library can be used more generally.  Right now the Player class requires XHR, which isn't allowed due to the same origin policy (except for Chrome Apps).  However the Book class is still useful for Node.js environments.
 
 I might convert this library over to CoffeeScript at some point.
 
 Chrome web app example:
 
+<script src="librivox-player-1.0.js" type="text/javascript"></script>
 <audio id="player" src="" controls>audio not supported in your browser</audio>
 <script type="text/javascript">
 	AudioPlayer = new LibLib.Player(document.getElementById("player"));

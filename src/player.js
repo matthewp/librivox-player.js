@@ -4,25 +4,29 @@ LibLib.Player = Class.extend({
 	},
 	
 	play: function(chapter) {
+		var thisPlayer = this;
+
 		var canplayListener = function(evt) {
-			this.audioElement.removeEventListener("canplay", canplayListener, false);
-			this.audioElement.currentTime = 0.0;
-			this.audioElement.play();
+			thisPlayer.audioElement.removeEventListener("canplay", canplayListener, false);
+			thisPlayer.audioElement.currentTime = 0.0;
+			thisPlayer.audioElement.play();
 		};
-	
-		this.audioElement.src = chapter.link;
-		this.audioElement.addEventListener("canplay", canplayListener, false);
+			
+		thisPlayer.audioElement.addEventListener("canplay", canplayListener, false);
+		thisPlayer.audioElement.src = chapter.link;
 	},
 	
 	playAtPosition: function(chapter, position) {
+		var thisPlayer = this;
+
 		var canplayListener = function(evt) {
-			this.audioElement.removeEventListener("canplay", canplayListener, false);
-			this.audioElement.currentTime = position;
-			this.audioElement.play();
+			thisPlayer.audioElement.removeEventListener("canplay", canplayListener, false);
+			thisPlayer.audioElement.currentTime = position;
+			thisPlayer.audioElement.play();
 		};
-	
-		this.audioElement.src = chapter.link;
-		this.audioElement.addEventListener("canplay", canplayListener, false);
+			
+		thisPlayer.audioElement.addEventListener("canplay", canplayListener, false);
+		thisPlayer.audioElement.src = chapter.link;
 	},
 	
 	pause: function() {
@@ -31,6 +35,10 @@ LibLib.Player = Class.extend({
 	
 	paused: function() {
 		return this.audioElement.paused;
+	},
+
+	addListener: function(event, callback) {
+		this.audioElement.addEventListener(event, callback, false);
 	}
 });
 
@@ -41,17 +49,20 @@ LibLib.Queue = LibLib.Player.extend({
 		this._super(element);
 		this.items = [];
 		this.current = 0;
+
+		var thisQueue = this;
 		
 		this.audioElement.addEventListener("ended", function() {
-			if(this.items.length > 0 && this.items.length - 1 != this.current) {
-				this.current++;
-				this.play();
+			if(thisQueue.items.length > 0 && thisQueue.items.length - 1 != thisQueue.current) {
+				thisQueue.current++;
+				thisQueue.play();
 			}
 		});
 	},
 	
 	play: function(items) {
 		if(items != null) {
+			this.clear();
 			this.add(items);
 			this.current = 0;
 		}
@@ -73,10 +84,16 @@ LibLib.Queue = LibLib.Player.extend({
 	
 	add: function(item) {
 		if(item instanceof LibLib.Book) {
-			this.items.push(item.chapters);
+			for(var i = 0; i < item.chapters.length; i++) {
+				this.items.push(item.chapters[i]);
+			}
 		} else if(item instanceof LibLib.Chapter) {
 			this.items.push(item);
 		}
+	},
+
+	clear: function() {
+		this.items = [];
 	},
 	
 	getCurrent: function() {
